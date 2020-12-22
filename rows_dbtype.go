@@ -3,38 +3,23 @@ package odbc
 import "github.com/alexbrainman/odbc/api"
 
 var typeMap = map[api.SQLSMALLINT]string{
-	api.SQL_UNKNOWN_TYPE: "SQL_UNKNOWN_TYPE",
-	api.SQL_CHAR:         "SQL_CHAR",
-	api.SQL_NUMERIC:      "SQL_NUMERIC",
-	api.SQL_DECIMAL:      "SQL_DECIMAL",
-	api.SQL_INTEGER:      "SQL_INTEGER",
-	api.SQL_SMALLINT:     "SQL_SMALLINT",
-	api.SQL_FLOAT:        "SQL_FLOAT",
-	api.SQL_REAL:         "SQL_REAL",
-	api.SQL_DOUBLE:       "SQL_DOUBLE",
-	api.SQL_DATETIME:     "SQL_DATETIME",
-	//api.SQL_DATE:            "SQL_DATE",
-	api.SQL_TIME:            "SQL_TIME",
-	api.SQL_VARCHAR:         "SQL_VARCHAR",
-	api.SQL_TYPE_DATE:       "SQL_TYPE_DATE",
-	api.SQL_TYPE_TIME:       "SQL_TYPE_TIME",
-	api.SQL_TYPE_TIMESTAMP:  "SQL_TYPE_TIMESTAMP",
-	api.SQL_TIMESTAMP:       "SQL_TIMESTAMP",
-	api.SQL_LONGVARCHAR:     "SQL_LONGVARCHAR",
-	api.SQL_BINARY:          "SQL_BINARY",
-	api.SQL_VARBINARY:       "SQL_VARBINARY",
-	api.SQL_LONGVARBINARY:   "SQL_LONGVARBINARY",
-	api.SQL_BIGINT:          "SQL_BIGINT",
-	api.SQL_TINYINT:         "SQL_TINYINT",
-	api.SQL_BIT:             "SQL_BIT",
-	api.SQL_WCHAR:           "SQL_WCHAR",
-	api.SQL_WVARCHAR:        "SQL_WVARCHAR",
-	api.SQL_WLONGVARCHAR:    "SQL_WLONGVARCHAR",
-	api.SQL_GUID:            "SQL_GUID",
-	api.SQL_SIGNED_OFFSET:   "SQL_SIGNED_OFFSET",
-	api.SQL_UNSIGNED_OFFSET: "SQL_UNSIGNED_OFFSET",
-	api.SQL_SS_XML:          "SQL_SS_XML",
-	api.SQL_SS_TIME2:        "SQL_SS_TIME2",
+	api.SQL_C_CHAR:           "SQL_C_CHAR",
+	api.SQL_C_LONG:           "SQL_C_LONG",
+	api.SQL_C_SHORT:          "SQL_C_SHORT",
+	api.SQL_C_FLOAT:          "SQL_C_FLOAT",
+	api.SQL_C_DOUBLE:         "SQL_C_DOUBLE",
+	api.SQL_C_NUMERIC:        "SQL_C_NUMERIC",
+	api.SQL_C_DATE:           "SQL_C_DATE",
+	api.SQL_C_TIME:           "SQL_C_TIME",
+	api.SQL_C_TYPE_TIMESTAMP: "SQL_C_TYPE_TIMESTAMP",
+	api.SQL_C_TIMESTAMP:      "SQL_C_TIMESTAMP",
+	api.SQL_C_BINARY:         "SQL_C_BINARY",
+	api.SQL_C_BIT:            "SQL_C_BIT",
+	api.SQL_C_WCHAR:          "SQL_C_WCHAR",
+	api.SQL_C_DEFAULT:        "SQL_C_DEFAULT",
+	api.SQL_C_SBIGINT:        "SQL_C_SBIGINT",
+	api.SQL_C_UBIGINT:        "SQL_C_UBIGINT",
+	api.SQL_C_GUID:           "SQL_C_GUID",
 }
 
 //ColumnTypeDatabaseTypeName 附加的
@@ -46,4 +31,14 @@ func (r *Rows) ColumnTypeDatabaseTypeName(index int) string {
 		return typeMap[col.SQLType]
 	}
 	return ""
+}
+
+//ColumnTypeLength 附加的
+func (r *Rows) ColumnTypeLength(index int) (length int64, ok bool) {
+	switch col := r.os.Cols[index].(type) {
+	case *BindableColumn:
+		return int64(col.Size), col.IsVariableWidth
+	}
+	return -1, false
+
 }
